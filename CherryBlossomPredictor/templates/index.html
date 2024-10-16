@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura Bloom Prediction</title>
+    <!-- Function to update the image source when a new site or spread is selected. Gets the selected site and spread
+     value from the menu, updates the src attribute of the image to the new plot image -->
+    <script>
+        function updateImage() {
+            // Gets selected site from dropdown menu
+            var site = document.getElementById("site").value;
+            // Gets the spread value from the input field
+            var spread = document.getElementById("spread").value;
+            // Updates the image src attribute to request the new plot with the selected site and spread
+            document.getElementById("plot").src = "/plot_image/" + site + "?spread=" + spread;
+            document.getElementById("plot_5year").src = "/plot_5_year_average";
+            document.getElementById("plot_bloom_by_date_periods").src = "/plot_bloom_by_date_periods";
+            document.getElementById("plot_percentage_error").src = "/plot_percentage_error";
+        }
+    </script>
+</head>
+<body>
+    <h1>Sakura Bloom Prediction</h1>
+    <form>
+        <label for="site">Choose a site:</label>
+        <!-- Dropdown menu for selecting a site -->
+        <select name="site_name" id="site" onchange="updateImage()">
+            {% for site in sites %}
+                <!-- Option for each site, sets the selected attribute if it is the current selected site -->
+                <option value="{{ site }}" {% if site == selected_site %}selected{% endif %}>{{ site }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="spread">Set spread value (days):</label>
+        <!-- Input field for setting the spread value -->
+        <input type="number" id="spread" name="spread" value="7" min="1" onchange="updateImage()">
+    </form>
+    <br>
+    <!-- Image tag to display the plot, attribute is updated based on the selected site and spread -->
+    <img id="plot" src="{{ url_for('plot_image', site_name=selected_site, spread=7) }}" alt="Sakura Bloom Prediction Plot">
+    <br>
+    <h2>5-year Average of Cherry Blossom's First-bloom Date</h2>
+    <img id="plot_5year" src="{{ url_for('plot_5year_average_route') }}" alt="5-year Average Plot">
+    <br>
+    <h2>Number of Cities by Average Bloom Date</h2>
+    <img id="plot_bloom_by_date_periods" src="{{ url_for('plot_bloom_by_date_periods_route') }}" alt="Bloom Dates by Periods">
+    <!-- <br> -->
+    <!-- <h2>Percentage Error for Predicted Bloom Dates</h2> -->
+    <!-- <img id="plot_percentage_error" src="{{ url_for('plot_percentage_error_route') }}" alt="Percentage Error Plot"> -->
+</body>
+</html>
